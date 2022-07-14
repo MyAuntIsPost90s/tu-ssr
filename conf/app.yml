@@ -1,0 +1,5 @@
+server:
+  port: 8901
+ssr:
+  base-url: https://127.0.0.1
+  cache-time: 300000
