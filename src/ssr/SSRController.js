@@ -1,7 +1,9 @@
 const request = require('request');
 const cache = require('memory-cache');
+const expressProxy = require('../express/ExpressProxy');
+const proxy = expressProxy()
 
-const ssr = async (req, res) => {
+proxy.all('/*', async (req, res) => {
   if (/\.(js|css|svg|png|jpg|jpeg|gif)$/.test(req.path)) {
     request(global.properties.ssr['base-url'] + req.originalUrl).pipe(res);
     return;
@@ -27,8 +29,6 @@ const ssr = async (req, res) => {
     }
   }
   res.send(html);
-}
+});
 
-module.exports = {
-  ssr
-}
+module.exports = proxy.app;

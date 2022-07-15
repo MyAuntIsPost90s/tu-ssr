@@ -1,11 +1,12 @@
 const log4js = require('log4js');
-const express = require('express');
-const SSRController = require('../ssr/SSRController');
+const ssrController = require('../ssr/SSRController');
+const filter = require('../express/Filter');
+const expressProxy = require('../express/ExpressProxy');
 const logger = log4js.getLogger('root');
 
-const proxy = (func) => async (req, res) => {
+const errorFilter = async (req, res, next, func) => {
   try {
-    await func(req, res);
+    await func(req, res, next);
   } catch (e) {
     logger.error(e);
     res.status(500).json({
@@ -16,8 +17,10 @@ const proxy = (func) => async (req, res) => {
 }
 
 module.exports = (port) => {
-  const app = express();
-  app.all('/*', proxy(SSRController.ssr));
+  const appProxy = expressProxy();
+  const app = appProxy.app;
+  filter.registerAround(appProxy.app, '/*', errorFilter);
+  appProxy.use(ssrController);
   app.listen(port, () => {
     logger.info(`Server started at http://127.0.0.1:${port}`);
   });
