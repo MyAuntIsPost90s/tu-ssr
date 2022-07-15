@@ -2,7 +2,7 @@ const request = require('request');
 const cache = require('memory-cache');
 
 const ssr = async (req, res) => {
-  if (/\.[a-zA-Z0-9]{1,}$/.test(req.path)) {
+  if (/\.(js|css|svg|png|jpg|jpeg|gif)$/.test(req.path)) {
     request(global.properties.ssr['base-url'] + req.originalUrl).pipe(res);
     return;
   }

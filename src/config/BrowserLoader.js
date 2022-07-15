@@ -10,6 +10,6 @@ module.exports = async () => {
       '--disable-dev-shm-usage',
       '--disable-setuid-sandbox',
       '--no-first-run'
-    ]
+    ],
   });
 }
